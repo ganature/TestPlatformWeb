@@ -23,11 +23,11 @@ from apps.users.views import IndexView, user_logout,LoginView
 urlpatterns = [
     path('admin/', xadmin.site.urls),
     path('', IndexView.as_view(), name='index'),
-    path('login/',LoginView.as_view(), name='login'),
+    path('login/', LoginView.as_view(), name='login'),
     path('logout/', user_logout, name='logout'),
 
     # rest_framework
-    path('api_auth/',include('rest_framework.urls')),
+    path('api_auth/', include('rest_framework.urls')),
 
     # 项目路由配置
     path('project/', include('project.urls', namespace='project')),
@@ -42,6 +42,6 @@ urlpatterns = [
     path('plan/', include('test_plan.urls', namespace='plan')),
 
     # 测试环境路由配置
-    path('env/',include('env_config.urls',namespace='env')),
+    path('env/', include('env_config.urls',namespace='env')),
 
 ]

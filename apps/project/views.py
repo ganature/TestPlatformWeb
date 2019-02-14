@@ -139,7 +139,10 @@ class ProjectEditView(View):
 class ProjectSyncView(View):
     def post(self, request):
         logger.debug('ProjectSync request:{}'.format(request))
-        id = request.GET['project_id']
+        print(request)
+        print(request.body)
+        print(dir(request))
+        id = request.POST['project_id']
         logger.info('ProjectSync request id:{}'.format(id))
         project = Project.objects.get(id=id)
         logger.debug('ProjectSync Project {}'.format(project))
