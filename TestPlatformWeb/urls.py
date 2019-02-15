@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """TestPlatformWeb URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -18,30 +20,29 @@ from django.urls import path, include
 
 import xadmin
 
-from apps.users.views import IndexView, user_logout,LoginView
+from apps.users.views import IndexView, user_logout, LoginView
 
-urlpatterns = [
-    path('admin/', xadmin.site.urls),
-    path('', IndexView.as_view(), name='index'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', user_logout, name='logout'),
+urlpatterns = [path('admin/', xadmin.site.urls),
+               path('', IndexView.as_view(), name='index'),
+               path('login/', LoginView.as_view(), name='login'),
+               path('logout/', user_logout, name='logout'),
 
-    # rest_framework
-    path('api_auth/', include('rest_framework.urls')),
+               # rest_framework
+               path('api_auth/', include('rest_framework.urls')),
 
-    # 项目路由配置
-    path('project/', include('project.urls', namespace='project')),
+               # 项目路由配置
+               path('project/', include('project.urls', namespace='project')),
 
-    # 测试用例路由配置
-    path('case/', include('test_case.urls', namespace='case')),
+               # 测试用例路由配置
+               path('case/', include('test_case.urls', namespace='case')),
 
-    # 测试集路由配置
-    path('suite/', include('test_suite.urls', namespace='suite')),
+               # 测试集路由配置
+               path('suite/', include('test_suite.urls', namespace='suite')),
 
-    # 测试计划路由配置
-    path('plan/', include('test_plan.urls', namespace='plan')),
+               # 测试计划路由配置
+               path('plan/', include('test_plan.urls', namespace='plan')),
 
-    # 测试环境路由配置
-    path('env/', include('env_config.urls',namespace='env')),
+               # 测试环境路由配置
+               path('env/', include('env_config.urls', namespace='env')),
 
-]
+               ]

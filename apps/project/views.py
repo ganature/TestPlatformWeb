@@ -1,85 +1,26 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
+import os
 
 from git import Repo
-from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import render, HttpResponseRedirect, reverse, HttpResponse,Http404
 from django.views.generic.base import View
-from django.core.paginator import Paginator
-from rest_framework.response import Response
-from rest_framework import mixins
-from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.pagination import PageNumberPagination
 
-from apps.get_pages import get_pages
+
 from apps.project.models import Project
 from apps.project.forms import ProjectForm
 from apps.users.models import UserProfile
-from apps.project.serializers import ProjectSerializers
-from TestPlatformWeb.settings import PROJECT_PATH
+from TestPlatformWeb.settings import BASE_DIR
+
 
 # Create your views here.
 logger = logging.getLogger('stu')
 
 
-class ProjectPagination(PageNumberPagination):
-    """
-    测试项目列表自定义分页
-    """
-
-    # 默认每页显示的个数
-    page_size = 5
-    # 可以动态改变每页显示的个数
-    page_size_query_param = 'page_size'
-    # 页码参数
-    page_query_param = 'page'
-    # 最多能显示多少页
-    max_page_size = 100
-
 class ProjectView(View):
-    def get(self,request):
-        return render(request,'project.html')
-
-class ProjectListView(generics.ListAPIView):
-    """
-    测试项目列表页
-    """
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializers
-    # 分页
-    pagination_class = ProjectPagination
-
-
-# class ProjectView(View):
-#     """
-#     测试项目列表视图
-#     """
-
-# def get(self, request):
-#     print(request.user)
-#     project_form = ProjectForm()
-#     # project = Project.objects.all()
-#     search_keyword = request.GET.get('project_name')
-#     search_type = request.GET.get('project_type')
-#     print(search_type)
-#     search_dict = {}
-#     if search_keyword:
-#         search_dict['name'] = search_keyword
-#     if search_type:
-#         search_dict['type'] = search_type
-#     # if search_keyword:
-#     #     project = Project.objects.filter(name__contains=search_keyword,type__contains=search_type)
-#     project = Project.objects.filter(**search_dict)
-#     # print(Project)
-#
-#     paginator_obj = Paginator(project, 10)  # 每页10条
-#     request_page_num = request.GET.get('page', 1)
-#     project_obj = paginator_obj.page(request_page_num)
-#
-#     total_page_number = paginator_obj.num_pages
-#
-#     project_list = get_pages(int(total_page_number), int(request_page_num))
-#
-#     return render(request, 'project.html', {'obj': project_obj, 'obj_list': project_list, 'obj_form': project_form})
+    def get(self, request):
+        return render(request, 'project.html')
 
 
 class ProjectAddView(View):
@@ -138,13 +79,17 @@ class ProjectEditView(View):
 
 class ProjectSyncView(View):
     def post(self, request):
-        logger.debug('ProjectSync request:{}'.format(request))
-        print(request)
-        print(request.body)
-        print(dir(request))
         id = request.POST['project_id']
         logger.info('ProjectSync request id:{}'.format(id))
         project = Project.objects.get(id=id)
-        logger.debug('ProjectSync Project {}'.format(project))
-        repo = Repo(PROJECT_PATH)
-        repo.clone(project.url)
+        project_path=BASE_DIR+'/project'+project.name
+        try:
+            if os.path.exists(project_path):
+                os.chdir(project_path)
+                os.system("git pull")
+            else:
+                os.makedirs(project_path)
+                os.system("git clone {} {}".format(project.url,project_path))
+            return HttpResponse({"status_code": 200})
+        except Exception as e:
+            logger.error(e)
