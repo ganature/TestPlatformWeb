@@ -245,7 +245,7 @@
                 "click #sync ": function(e,value,row,index){
                                         $.ajax({
                                             url: "{% url 'project:project_sync' %}",
-                                            type:'POST',s
+                                            type:'POST',
                                             data: {'project_id':row.id},
                                             success:function () {
 
