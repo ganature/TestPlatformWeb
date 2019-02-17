@@ -116,15 +116,21 @@
             };
             window.operateEvents = {
                 "click #sync ": function(e,value,row,index){
+                                        $.bootstrapLoading.start({ loadingTips: "正在处理数据，请稍候..."});
                                         $.ajax({
                                             url: "{% url 'project:project_sync' %}",
                                             type:'POST',
                                             data: {'project_id':row.id},
                                             success:function () {
 
-                                                alert('sync success!');},
+                                                return null;},
+                                            complete:function () {
+                                                $.bootstrapLoading.end()
+                                            }
                                         })
-            }}
+
+                    }
+            }
             oTableInit.responseHandler=function(res){
                 return {
                     "rows":res.results,
@@ -140,7 +146,7 @@
             };
             return temp;
         };
-        return oTableInit;
+            return oTableInit;
     };
 
 

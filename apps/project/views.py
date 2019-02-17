@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 import logging
 import os
@@ -15,7 +15,7 @@ from TestPlatformWeb.settings import BASE_DIR
 
 
 # Create your views here.
-logger = logging.getLogger('stu')
+# logger = logging.getLogger('debug')
 
 
 class ProjectView(View):
@@ -80,16 +80,20 @@ class ProjectEditView(View):
 class ProjectSyncView(View):
     def post(self, request):
         id = request.POST['project_id']
-        logger.info('ProjectSync request id:{}'.format(id))
+        print('ProjectSync request id:{}'.format(id))
         project = Project.objects.get(id=id)
-        project_path=BASE_DIR+'/project'+project.name
+        project_path=BASE_DIR+'/project/'+project.name
+        print("project_path : {}".format(project_path))
+        print(project_path)
         try:
-            if os.path.exists(project_path):
+            if os.path.exists(project_path) :
                 os.chdir(project_path)
                 os.system("git pull")
             else:
                 os.makedirs(project_path)
-                os.system("git clone {} {}".format(project.url,project_path))
+                print("git clone {} {}".format(project.url,project_path))
+                # os.system("git clone {} {}".format(project.url,project_path))
+                os.system("git clone {}".format(project.url))
             return HttpResponse({"status_code": 200})
         except Exception as e:
-            logger.error(e)
+            print(e)

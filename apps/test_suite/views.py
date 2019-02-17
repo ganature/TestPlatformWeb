@@ -2,7 +2,6 @@ from django.shortcuts import render, HttpResponseRedirect, reverse
 from django.views.generic.base import View
 from django.core.paginator import Paginator
 
-from apps.get_pages import get_pages
 from apps.test_suite.models import Suites
 from apps.users.models import UserProfile
 from apps.test_suite.forms import SuiteForm
@@ -21,9 +20,9 @@ class SuiteView(View):
         request_page_num = request.GET.get('page', 1)
         suite_obj = paginator_obj.page(request_page_num)
         total_page_number = paginator_obj.num_pages
-        suite_list = get_pages(int(total_page_number), int(request_page_num))
+        # suite_list = get_pages(int(total_page_number), int(request_page_num))
 
-        return render(request, 'suite.html', {'obj': suite_obj, 'obj_list': suite_list})
+        return render(request, 'suite.html', {'obj': suite_obj})
 
 
 class SuiteAddView(View):

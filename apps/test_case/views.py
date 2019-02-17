@@ -4,7 +4,7 @@ from django.shortcuts import render, HttpResponse
 from django.views.generic.base import View
 from django.core.paginator import Paginator
 
-from apps.get_pages import get_pages
+
 from apps.test_case.models import TestCase
 from apps.users.models import UserProfile
 from apps.project.models import Project
@@ -29,10 +29,9 @@ class CaseView(View):
 
         total_page_number = paginator_obj.num_pages
 
-        case_list = get_pages(int(total_page_number), int(request_page_num))
+        # case_list = get_pages(int(total_page_number), int(request_page_num))
 
-        return render(request, 'case.html',
-                      {'obj': case_obj, 'obj_list': case_list, 'project_list': project_list, 'obj_form': case_form})
+        return render(request, 'case.html')
 
 
 class CaseAddView(View):

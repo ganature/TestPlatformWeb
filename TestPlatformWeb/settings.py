@@ -135,38 +135,4 @@ LOGIN_URL = '/login/'
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin123'
 
-# 创建日志的路径
-LOG_PATH = os.path.join(BASE_DIR, 'log')
-# 如果地址不存在，则自动创建log文件夹
-if not os.path.join(LOG_PATH):
-    os.mkdir(LOG_PATH)
 
-LOGGING = {  # version只能为1,定义了配置文件的版本，当前版本号为1.0
-    "version": 1,  # True表示禁用logger
-    "disable_existing_loggers": False,  # 格式化
-    'formatters': {
-        'default': {'format': '%(levelno)s %(funcName) %(module)s %(asctime)s %(message)s '},
-        'simple': {'format': '%(levelno)s %(module)s %(created)s %(message)s'}
-    },
-
-    'handlers': {
-        'stu_handlers': {
-            'level': 'DEBUG',  # 日志文件指定为5M, 超过5m重新命名，然后写入新的日志文件
-            'class': 'logging.handlers.RotatingFileHandler',  # 指定文件大小
-            'maxBytes': 5 * 1024,  # 指定文件地址
-            'filename': '%s/log.txt' % LOG_PATH, 'formatter': 'default'
-        }, 'uauth_handlers': {
-            'level': 'DEBUG',  # 日志文件指定为5M, 超过5m重新命名，然后写入新的日志文件
-            'class': 'logging.handlers.RotatingFileHandler',  # 指定文件大小
-            'maxBytes': 5 * 1024 * 1024,  # 指定文件地址
-            'filename': '%s/uauth.txt' % LOG_PATH, 'formatter': 'simple'
-        }
-    }, 'loggers': {
-        'stu': {'handlers': ['stu_handlers'], 'level': 'INFO'},
-        'auth': {'handlers': ['uauth_handlers'], 'level': 'INFO'}
-    },
-
-    'filters': {
-
-        }
-}

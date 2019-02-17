@@ -1,0 +1,3 @@
+%(levelno)s %(funcName) %(module)s %(asctime)s %(message)s 
+%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s]- %(message)s
+2019-02-17 22:06:42,987 [Thread-6:14112] [debug:83] [views:post] [INFO]- ProjectSync request id:1

@@ -30,7 +30,7 @@ class ProjectListView(generics.ListAPIView):
     """
     测试项目列表页
     """
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().order_by('id')
     serializer_class = ProjectSerializers
     # 分页
     pagination_class = ProjectPagination
