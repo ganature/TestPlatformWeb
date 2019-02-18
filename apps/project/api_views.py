@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from collections import OrderedDict
 
 from apps.project.models import Project
 from apps.project.serializers import ProjectSerializers
+from TestPlatformWeb.settings import BASE_DIR
 
 
 class ProjectPagination(PageNumberPagination):
@@ -34,4 +39,28 @@ class ProjectListView(generics.ListAPIView):
     serializer_class = ProjectSerializers
     # 分页
     pagination_class = ProjectPagination
+
+
+class ProjectSyncView(APIView):
+
+    def post(self, request):
+        id = request.POST['project_id']
+        print('ProjectSync request id:{}'.format(id))
+        project = Project.objects.get(id=id)
+        project_path=BASE_DIR+'/project/'+project.name
+        print("project_path : {}".format(project_path))
+        print(project_path)
+        try:
+            if os.path.exists(project_path) :
+                os.chdir(project_path)
+                os.system("git pull")
+            else:
+                os.makedirs(project_path)
+                print("git clone {} {}".format(project.url,project_path))
+                os.system("git clone {} {}".format(project.url,project_path))
+                # os.system("git clone {}".format(project.url))
+            return Response(OrderedDict([("status_code", 200)]))
+        except Exception as e:
+            print(e)
+            return Response(("status_code",100),status =status.HTTP_400_BAD_REQUEST )
 

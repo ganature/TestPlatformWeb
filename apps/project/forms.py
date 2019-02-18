@@ -14,9 +14,12 @@ class ProjectForm(forms.Form):
     type = forms.CharField(widget=forms.Select(choices=[], attrs={'class': 'selectpicker  bla bli form-control',
                                                                   'data-live-search': 'true',
                                                                   'style': 'display: none'}), label='项目类型')
+    url = forms.CharField(max_length = 100, widget = forms.TextInput(
+        attrs = {'class': 'form-control text-success', 'placeholder': '请输入项目地址'}), label = '项目地址')
 
     detail = forms.CharField(max_length=100, widget=forms.TextInput(
         attrs={'class': 'form-control text-success', 'placeholder': '请输入备注'}), label='备注')
+
     creator = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control", 'style': "display:None"}),
                               label=' ')
 

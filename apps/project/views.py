@@ -20,7 +20,8 @@ from TestPlatformWeb.settings import BASE_DIR
 
 class ProjectView(View):
     def get(self, request):
-        return render(request, 'project.html')
+        project_from=ProjectForm()
+        return render(request, 'project.html',{"obj_form":project_from})
 
 
 class ProjectAddView(View):
@@ -77,23 +78,4 @@ class ProjectEditView(View):
         return HttpResponseRedirect(reverse('project_list'))
 
 
-class ProjectSyncView(View):
-    def post(self, request):
-        id = request.POST['project_id']
-        print('ProjectSync request id:{}'.format(id))
-        project = Project.objects.get(id=id)
-        project_path=BASE_DIR+'/project/'+project.name
-        print("project_path : {}".format(project_path))
-        print(project_path)
-        try:
-            if os.path.exists(project_path) :
-                os.chdir(project_path)
-                os.system("git pull")
-            else:
-                os.makedirs(project_path)
-                print("git clone {} {}".format(project.url,project_path))
-                # os.system("git clone {} {}".format(project.url,project_path))
-                os.system("git clone {}".format(project.url))
-            return HttpResponse({"status_code": 200})
-        except Exception as e:
-            print(e)
+

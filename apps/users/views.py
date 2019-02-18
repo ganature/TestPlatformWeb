@@ -38,7 +38,7 @@ class LoginView(View):
         print(auth_login)
         if auth_login:
             login(request, auth_login)
-            response = HttpResponseRedirect('/robot_project_list/')
+            response = HttpResponseRedirect('/project/list')
             response.set_cookie('name', user_name, 60 * 60 * 24 * 1)
             return response
         else:
