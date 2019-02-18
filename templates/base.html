@@ -16,8 +16,8 @@
 
 
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
-
+{#	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>#}
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"></script>
 	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="/static/js/bootstrap-select.min.js"></script>
@@ -27,7 +27,7 @@
 	<script src="/static/js/bootstrap-table.js"></script>
 	<script src="/static/js/bootstrap-table-zh-CN.js"></script>
     <script src="/static/js/bootstrap-treeview.js"></script>
-    <script src="/static/js/toastr.min.js"></script>
+    <script src="/static/js/toastr.js"></script>
     <script src="/static/js/common/loading.js"></script>
 	<style>
 		.div-brand {
@@ -37,7 +37,9 @@
 	</style>
 </head>
 <body>
-
+<script>
+    toastr.info("测试");
+</script>
 {% block content %}
     {% include 'nav.html' %}
     <div class="div-brand"></div>
