@@ -4,7 +4,7 @@ from apps.test_case.models import TestCase
 from apps.users.serializers import UserSerializer
 
 
-class ProjectSerializers(serializers.ModelSerializer):
+class CaseSerializers(serializers.ModelSerializer):
     creator = UserSerializer()
 
     class Meta:

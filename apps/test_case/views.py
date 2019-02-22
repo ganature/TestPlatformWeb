@@ -23,7 +23,7 @@ class CaseView(View):
         project_list = Project.objects.all()
 
         case = TestCase.objects.all()
-        paginator_obj = Paginator(case, 10)  # 每页10条
+        paginator_obj = Paginator(case, 5)  # 每页10条
         request_page_num = request.GET.get('page', 1)
         case_obj = paginator_obj.page(request_page_num)
 
