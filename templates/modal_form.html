@@ -6,6 +6,7 @@
                     <h4 class="modal-title" id="myModalLabel">新增</h4>
                  <div class="modal-body">
                 </div>
+
                     {% for field in obj_form %}
                         <div class="form-group">
                             <label for={{ field.id_for_label }}>{{ field.label }}</label>
@@ -15,9 +16,62 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
-                    <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                    <button type="submit" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
                 </div>
+            <script>
+                $("#btn_submit").click(function () {
+                 var url;
+                 if ($("#myModalLabel").text="新增"){
+                     url="{% url 'project:project_add' %}";
+                     $.ajax({
+                         url:url,
+                         type:'POST',
+                         xhrFields: {
+                         withCredentials: true
+                            },
+                         crossDomain: true,
+                         data:{
+                             name:$("#id_name").value,
+                             type:$("#id_type").value
 
+                         },
+                         success:function (data) {
+                             if (data.error_code=0){
+                                toastr.success("保存成功");
+                             }
+                             else {
+                                 toastr.warning(data.data);
+                             }
+                         }
+                     })
+                 }
+                 else {
+                     url="{% url 'project:project_detail' %}";
+                     $.ajax(
+                     {
+                         url:url,
+                         type:'POST',
+                         data: {'project_id':row.id},
+                         success:function (data) {
+                                if (data.error_code=0){
+                                    toastr.success("保存成功");
+                                }
+                                else {
+                                    toastr.warning(data.data);
+                                }
+                            },
+                         fail:function (data) {
+                             toastr.error(data.data);
+                         }
+
+                     }
+                 )
+                 }
+
+
+
+             })
+            </script>
             </div>
         </div>
     </div>
