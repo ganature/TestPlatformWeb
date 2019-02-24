@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 from django.urls import path
 
-from apps.project.views import ProjectView
-from apps.project.api_views import ProjectListView, ProjectSyncView, ProjectEditView, ProjectAddView
+from apps.project.views import ProjectView,ProjectAddView
+from apps.project.api_views import ProjectListView, ProjectSyncView, ProjectEditView
 
 app_name = 'project'
 urlpatterns = [

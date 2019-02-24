@@ -24,7 +24,33 @@ class ProjectView(View):
         return render(request, 'project.html',{"obj_form":project_from})
 
 
+class ProjectAddView(View):
+    """
+    项目新增页面
+    """
 
+    def get(self, request):
+
+        user = UserProfile.objects.get(username=request.user)
+
+        project_form = ProjectForm({'creator': user.username})
+
+        return render(request, 'project_add.html', {'obj_form': project_form})
+
+    def post(self, request):
+        project_form = ProjectForm(request.POST)
+        print(request.POST)
+        print(request.data)
+        if project_form.is_valid():
+            name = request.POST['name']
+            type = request.POST['type']
+            detail = request.POST['detail']
+            creator = UserProfile.objects.get(username=request.user)
+            project = Project(name=name, type=type, detail=detail, creator=creator)
+            project.save()
+        else:
+            return render(request, 'project_add.html', {'error': project_form.errors})
+        return HttpResponseRedirect(reverse('project_list'))
 
 
 class ProjectEditView(View):

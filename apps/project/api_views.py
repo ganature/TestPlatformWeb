@@ -59,7 +59,6 @@ class ProjectAddView(APIView):
         print(request.POST)
         project = Project.objects.all()
         serializer = ProjectSerializers(project, data=request.POST)
-
         if serializer.is_valid():
             serializer.save()
             data = {
