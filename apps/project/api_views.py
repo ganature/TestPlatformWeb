@@ -44,70 +44,31 @@ class ProjectListView(generics.ListAPIView):
     # 分页
     pagination_class = ProjectPagination
 
+    search_fields = ('name', 'type')
 
-class ProjectAddView(APIView):
+
+class ProjectAddView(generics.CreateAPIView):
     """
     项目新增页面
     """
-
-    def get_object(self, pk):
-        try:
-            return Project.objects.get(pk = pk)
-        except Exception as e:
-            pass
-
-    def post(self, request):
-        print(request.POST)
-        project_form = ProjectForm(request.POST)
-        if project_form.is_valid():
-            name = request.POST['name']
-            type = request.POST['type']
-            url = request.POST['url']
-            creator = UserProfile.objects.get(username = request.user)
-            project = Project(name = name, type = type, url = url, creator = creator)
-            project.save()
-            data = {
-                "error_code": 0,
-                "error_msg": "ok",
-
-            }
-            return Response(data = data)
-        else:
-            data = {
-                "data": project_form.errors,
-            }
-            return Response(data = data, status = status.HTTP_400_BAD_REQUEST)
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializers
 
 
-class ProjectEditView(APIView):
+class ProjectEditView(generics.RetrieveUpdateAPIView):
     """
     项目编辑
     """
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializers
 
-    def get_object(self, pk):
-        try:
-            return Project.objects.get(pk = pk)
-        except Exception as e:
-            pass
 
-    def get(self, request):
-        pk = request.GET['pk']
-        project = self.get_object(pk)
-        serializer = ProjectSerializers(project)
-        data = {
-            "error_code": 0,
-            "error_msg": "ok",
-            "data": serializer.data,
-        }
-        return Response(data)
-
-    def put(self, request, pk):
-        project = self.get_object(pk)
-        serializer = ProjectSerializers(project, data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+class ProjectDeleteView(generics.DestroyAPIView):
+    """
+    删除项目
+    """
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializers
 
 
 class ProjectSyncView(APIView):
@@ -115,7 +76,7 @@ class ProjectSyncView(APIView):
     def post(self, request):
         id = request.POST['project_id']
         print('ProjectSync request id:{}'.format(id))
-        project = Project.objects.get(id = id)
+        project = Project.objects.get(id=id)
         project_path = BASE_DIR + '/project/' + project.name
         print("project_path : {}".format(project_path))
         print(project_path)
@@ -126,9 +87,9 @@ class ProjectSyncView(APIView):
             else:
                 os.makedirs(project_path)
                 print("git clone {} {}".format(project.url, project_path))
-                os.system("git clone {} {}".format(project.url, project_path))
-                # os.system("git clone {}".format(project.url))
+                os.system("git clone {} {}".format(project.url,
+                                                   project_path))  # os.system("git clone {}".format(project.url))
             return Response(OrderedDict([("status_code", 200)]))
         except Exception as e:
             print(e)
-            return Response(("status_code", 100), status = status.HTTP_400_BAD_REQUEST)
+            return Response(("status_code", 100), status=status.HTTP_400_BAD_REQUEST)
