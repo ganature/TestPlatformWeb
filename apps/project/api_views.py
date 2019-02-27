@@ -12,12 +12,15 @@ from rest_framework.views import APIView
 from django.views.generic.base import View
 from rest_framework.pagination import PageNumberPagination
 from collections import OrderedDict
+from rest_framework.decorators import action
 
 from apps.project.models import Project
 from apps.users.models import UserProfile
 from apps.project.forms import ProjectForm
 from apps.project.serializers import ProjectSerializers
 from TestPlatformWeb.settings import BASE_DIR
+from common.utils.views import CustomViewBase
+from common.utils.response import JsonResponse
 
 
 class ProjectPagination(PageNumberPagination):
@@ -35,7 +38,7 @@ class ProjectPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class ProjectListView(generics.ListAPIView):
+class ProjectViewSet(CustomViewBase):
     """
     测试项目列表页
     """
@@ -46,29 +49,31 @@ class ProjectListView(generics.ListAPIView):
 
     search_fields = ('name', 'type')
 
-
-class ProjectAddView(generics.CreateAPIView):
-    """
-    项目新增页面
-    """
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializers
-
-
-class ProjectEditView(generics.RetrieveUpdateAPIView):
-    """
-    项目编辑
-    """
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializers
-
-
-class ProjectDeleteView(generics.DestroyAPIView):
-    """
-    删除项目
-    """
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializers
+    @action(methods=['get'], detail=True, )
+    def sync(self, request, pk):
+        project = Project.objects.get(id=pk)
+        project_path = BASE_DIR + '/project/' + project.name
+        if project.status == 0:
+            if os.path.exists(project_path):
+                os.chdir(project_path)
+                os.system("git pull")
+                project.status = 1
+                project.save()
+            else:
+                os.makedirs(project_path)
+                print("git clone {} {}".format(project.url, project_path))
+                os.system("git clone {} {}".format(project.url, project_path))
+                project.status = 1
+                project.save()
+            return JsonResponse(data=[], code=200, msg='项目初始化成功')
+        elif project.status == 1:
+            os.chdir(project_path)
+            os.system("git pull")
+            project.status = 1
+            project.save()
+            return JsonResponse(code=200, msg='项目已更新')
+        else:
+            return JsonResponse(code=100, msg='更新失败')
 
 
 class ProjectSyncView(APIView):
@@ -87,9 +92,8 @@ class ProjectSyncView(APIView):
             else:
                 os.makedirs(project_path)
                 print("git clone {} {}".format(project.url, project_path))
-                os.system("git clone {} {}".format(project.url,
-                                                   project_path))  # os.system("git clone {}".format(project.url))
-            return Response(OrderedDict([("status_code", 200)]))
+                os.system("git clone {} {}".format(project.url, project_path))
+            return Response(OrderedDict([("code", 200)]))
         except Exception as e:
             print(e)
-            return Response(("status_code", 100), status=status.HTTP_400_BAD_REQUEST)
+            return Response(("code", 100), status=status.HTTP_400_BAD_REQUEST)
