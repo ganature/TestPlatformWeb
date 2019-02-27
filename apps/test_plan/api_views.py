@@ -30,7 +30,9 @@ class PlanPagination(PageNumberPagination):
 class PlanViewSet(CustomViewBase):
     """
     测试用例列表
+
     """
+    queryset = Plan.objects.all().order_by('id')
     serializer_class = PlanSerializers
     # 分页
     pagination_class = PlanPagination

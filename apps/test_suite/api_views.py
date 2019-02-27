@@ -31,9 +31,11 @@ class SuitesViewSet(CustomViewBase):
     """
     测试用例列表
     """
+    queryset = Suites.objects.all().order_by('id')
     serializer_class = SuitesSerializers
     # 分页
     pagination_class = SuitesPagination
+
 
 
 

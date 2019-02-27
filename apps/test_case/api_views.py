@@ -9,7 +9,6 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 
-
 from apps.test_case.models import TestCase
 from apps.test_case.serializers import CaseSerializers
 from apps.users.serializers import UserSerializer
@@ -32,18 +31,6 @@ class CasePagination(PageNumberPagination):
     max_page_size = 100
 
 
-class CaseListView(generics.ListAPIView):
-    """
-    测试用例列表
-    """
-    serializer_class = CaseSerializers
-    creator = UserSerializer()
-
-    class Meta:
-        model = TestCase
-        fields = '__all__'
-
-
 class CaseViewSet(CustomViewBase):
     """
     测试用例
@@ -52,5 +39,3 @@ class CaseViewSet(CustomViewBase):
     serializer_class = CaseSerializers
     # 分页
     pagination_class = CasePagination
-
-    search_fields = ('name', )
