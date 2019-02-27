@@ -17,18 +17,20 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
 
 import xadmin
 
 from apps.users.views import IndexView, user_logout, LoginView
 
-urlpatterns = [path('admin/', xadmin.site.urls),
-               path('', IndexView.as_view(), name='index'),
-               path('login/', LoginView.as_view(), name='login'),
-               path('logout/', user_logout, name='logout'),
+urlpatterns = [path('admin/', xadmin.site.urls), path('', IndexView.as_view(), name='index'),
+               path('login/', LoginView.as_view(), name='login'), path('logout/', user_logout, name='logout'),
 
                # rest_framework
                path('api_auth/', include('rest_framework.urls')),
+
+               # drf文档，title自定义
+               path('docs', include_docs_urls(title='接口文档')),
 
                # 项目路由配置
                path('project/', include('project.urls', namespace='project')),

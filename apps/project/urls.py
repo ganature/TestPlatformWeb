@@ -1,17 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from apps.project.views import ProjectView,ProjectAddView
-from apps.project.api_views import ProjectListView, ProjectSyncView, ProjectEditView
 
+from apps.project.views import ProjectView
+from apps.project.api_views import ProjectViewSet
+
+
+api_list = ProjectViewSet.as_view(
+    {
+        'get': 'list',
+        'post': 'create',
+    }
+)
+
+api_detail = ProjectViewSet.as_view(
+    {
+        'get': 'retrieve',
+        'put': 'update',
+        'patch': 'partial_update',
+        'delete': 'destroy'
+    }
+)
+
+router = DefaultRouter()
+router.register(r'api', ProjectViewSet)
 app_name = 'project'
+
+
+
 urlpatterns = [
     path('list/', ProjectView.as_view(), name='project_list'),
 
-    path('add/', ProjectAddView.as_view(), name='project_add'),
-    path('edit/', ProjectEditView.as_view(), name='project_detail'),
-    path('sync/', ProjectSyncView.as_view(), name='project_sync'),
     # api路由配置
-    path('api/list', ProjectListView.as_view(), name='project_list_json'),
+    path('', include(router.urls))
     ]
+
